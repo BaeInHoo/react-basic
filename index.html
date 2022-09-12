@@ -7,7 +7,47 @@
   <title>Document</title>
 </head>
 <body>
+  <div id="root"></div>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script> 
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+
+    let i = 0;
+
+    class App extends React.Component {
+      state = {list: []};
+
+      render() {
+        return (
+          <div id="list" style={{ height: 100, overflow: "scroll"}}>
+            {this.state.list.map((i) => {
+              return <div>{i}</div>
+            })}  
+          </div>
+        );
+      }
+
+      componentDidMount() {
+        setInterval(() => {
+          this.setState((state) => ({
+            list: [...state.list, i++]
+          }));
+        }, 1000);
+      }
+
+      getSnapshotBeforeUpdate(prevProps, prevState) {
+        if (prevState.list.length === this.state.list.length) return null;
+        const list = document.querySelector("#list");
+        return list.scrollHeight = list.scrollTop;
+      }
+
+      componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log(snapshot);
+      }
+    }
+
+    ReactDOM.render(<App name="Mark" />, document.querySelector("#root"));
+  </script>
 </body>
 </html>
